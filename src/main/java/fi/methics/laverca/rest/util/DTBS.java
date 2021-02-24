@@ -21,10 +21,6 @@ package fi.methics.laverca.rest.util;
 
 import java.io.UnsupportedEncodingException;
 
-import org.apache.axis.encoding.Base64;
-
-import fi.laverca.jaxb.mss.DataType;
-
 /**
  * Dual-mode mapper class for "DataToBeSigned"
  */
@@ -46,7 +42,6 @@ public class DTBS {
     final static public String MIME_UTF8      = "text/plain;UTF-8";
     final static public String MIME_TEXTPLAIN = "text/plain";
 
-    
     /**
      * Initialize a DTBS with text.
      * 

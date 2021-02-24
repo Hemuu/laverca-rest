@@ -28,13 +28,14 @@ import fi.methics.laverca.rest.util.LavercaPAdESService;
 public class SignPDF {
 
     private static final DigestAlgorithm    DIGEST_ALG    = DigestAlgorithm.SHA256;
-    private static final String             MSISDN        = "35847001001";
-    private static final String             SIG_PROFILE   = "http://alauda.mobi/nonRepudiation";
-    private static final String             AP_ID         = "http://laverca-test";
-    private static final String             API_KEY       = "h4h428QAiNuhnljvw9U1fsYRUDwuv9ytDzAiepv1ywtvyJpy";
-    private static final String             REST_URL      = "http://localhost:9060/rest/service";
-
     
+    private static final String AP_ID         = "http://laverca-test";
+    private static final String API_KEY       = "h4h428QAiNuhnljvw9U1fsYRUDwuv9ytDzAiepv1ywtvyJpy";
+    private static final String MSISDN        = "35847001001";
+    private static final String SIG_PROFILE   = "http://alauda.mobi/nonRepudiation";
+    private static final String REST_URL      = "http://localhost:9060/rest/service";
+    
+    private static final String REASON          = "Signing test";
     private static final String DOC_PATH        = "./example.pdf";
     private static final String SIGNED_DOC_PATH = "./example.signed.pdf";
     
@@ -45,6 +46,10 @@ public class SignPDF {
         new SignPDF().run();
     }
     
+    /**
+     * Run the example
+     * @throws Exception
+     */
     public void run() throws Exception {
         
         this.client = new MssClient(AP_ID, API_KEY, REST_URL);
@@ -65,14 +70,18 @@ public class SignPDF {
         System.out.println("Saved signed document to " + new File(SIGNED_DOC_PATH).getAbsolutePath());
     }
     
+    /**
+     * Create ESIG PAdES parameters 
+     * @return PAdES parameters
+     */
     private PAdESSignatureParameters createParams() {
         List<X509Certificate> chain = this.client.getCertificateChain(MSISDN, SIG_PROFILE);
         PAdESSignatureParameters parameters = new PAdESSignatureParameters();
         parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
         parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
         parameters.setDigestAlgorithm(DIGEST_ALG);
-        parameters.setReason("MobiFinance CMS");
-        parameters.setSignatureSize(256000);
+        parameters.setReason(REASON);
+        parameters.setSignatureSize(25600);
         parameters.setArchiveTimestampParameters(new TimestampParameters(DIGEST_ALG));
         parameters.setCertificateChain(chain.stream().map(CertificateToken::new).collect(Collectors.toList()));
         parameters.setSigningCertificate(new CertificateToken(chain.get(0)));
@@ -80,6 +89,10 @@ public class SignPDF {
         return parameters;
     }
     
+    /**
+     * Create ESIG PAdES verifier 
+     * @return PAdES verifier
+     */
     private CommonCertificateVerifier createVerifier() {
         CommonCertificateVerifier verifier = new CommonCertificateVerifier();
         verifier.setExceptionOnMissingRevocationData(false);
@@ -90,6 +103,10 @@ public class SignPDF {
         return verifier;
     }
     
+    /**
+     * Create ESIG PAdES service 
+     * @return PAdES service
+     */
     private LavercaPAdESService createService(CertificateVerifier verifier) {
         LavercaPAdESService service = new LavercaPAdESService(verifier);
         service.setTspSource(new OnlineTSPSource("http://timestamp.digicert.com/"));
