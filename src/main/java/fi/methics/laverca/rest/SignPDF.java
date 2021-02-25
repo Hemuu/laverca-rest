@@ -29,8 +29,14 @@ public class SignPDF {
 
     private static final DigestAlgorithm    DIGEST_ALG    = DigestAlgorithm.SHA256;
     
+    // PWD authn
+    private static final String AP_NAME       = "laverca-test";
+    private static final String PASSWORD      = "3Zqka5MR1vfzzSxPHIYf";
+    
+    // API_KEY authn
     private static final String AP_ID         = "http://laverca-test";
     private static final String API_KEY       = "h4h428QAiNuhnljvw9U1fsYRUDwuv9ytDzAiepv1ywtvyJpy";
+    
     private static final String MSISDN        = "35847001001";
     private static final String SIG_PROFILE   = "http://alauda.mobi/nonRepudiation";
     private static final String REST_URL      = "http://localhost:9060/rest/service";
@@ -52,7 +58,8 @@ public class SignPDF {
      */
     public void run() throws Exception {
         
-        this.client = new MssClient(AP_ID, API_KEY, REST_URL);
+        //this.client = MssClient.initWithApiKey(AP_ID, API_KEY, REST_URL);
+        this.client = MssClient.initWithPassword(AP_NAME, PASSWORD, REST_URL);
         this.doc    = new FileDocument(DOC_PATH);
         
         CommonCertificateVerifier verifier   = this.createVerifier();

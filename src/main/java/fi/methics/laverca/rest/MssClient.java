@@ -22,6 +22,7 @@ import fi.methics.laverca.rest.json.MSS_SignatureReq;
 import fi.methics.laverca.rest.json.Status.MobileUserCertificate;
 import fi.methics.laverca.rest.util.DTBS;
 import fi.methics.laverca.rest.util.RestClient;
+import fi.methics.laverca.rest.util.RestClient.AuthnMode;
 import fi.methics.laverca.rest.util.RestException;
 
 public class MssClient {
@@ -36,11 +37,32 @@ public class MssClient {
     private RestClient client;
     private String apid;
     
-    public MssClient(final String apid,
-                     final String apikey,
-                     final String resturl)
+    private MssClient() { }
+    
+    public static MssClient initWithApiKey(final String apid, 
+                                           final String apikey,
+                                           final String resturl) {
+        MssClient c = new MssClient();
+        c.client = new RestClient();
+        c.client.setApId(apid);
+        c.client.setApiKey(apikey);
+        c.client.setAuthnMode(AuthnMode.APIKEY);
+        c.client.setRestUrl(resturl);
+        return c;
+    }
+
+    
+    public static MssClient initWithPassword(final String apname, 
+                                             final String restpassword,
+                                             final String resturl)
     {
-        this.client = new RestClient(apid, apikey, resturl);
+        MssClient c = new MssClient();
+        c.client = new RestClient();
+        c.client.setApName(apname);
+        c.client.setPassword(restpassword);
+        c.client.setAuthnMode(AuthnMode.PASSWORD);
+        c.client.setRestUrl(resturl);
+        return c;
     }
     
     /**
