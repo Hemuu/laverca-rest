@@ -89,12 +89,7 @@ public class MssClient {
             
             List<MobileUserCertificate> jsonChain = resp.MSS_ProfileResp.Status.StatusDetail.ProfileQueryExtension.MobileUserCertificate;
             List<X509Certificate>     resultChain = new ArrayList<>();
-            
-            System.out.println("Got Certs with ProfileQuery:");
-            for (MobileUserCertificate cert : jsonChain) {
-                System.out.println(new Gson().toJson(cert));
-            }
-            
+
             for (MobileUserCertificate chain : jsonChain) {
                 if (chain == null) continue;
                 if (chain.SignatureProfiles == null) continue;
@@ -102,7 +97,6 @@ public class MssClient {
                 if (chain.State != null && !chain.State.equals("ACTIVE")) continue; // ignore inactive certs
                 
                 if (chain.SignatureProfiles.contains(signatureprofile)) {
-                    System.out.println("Found Certificate with SignatureProfile " + signatureprofile);
                     List<X509Certificate> certs = new ArrayList<>();
                     for (String cert : chain.X509Certificate) {
                         CertificateFactory certFactory = null;
