@@ -116,7 +116,7 @@ public class SignPDF {
      */
     private LavercaPAdESService createService(CertificateVerifier verifier) {
         LavercaPAdESService service = new LavercaPAdESService(verifier);
-        service.setTspSource(new OnlineTSPSource("http://timestamp.digicert.com/"));
+        service.setTspSource(new OnlineTSPSource("http://tsa.belgium.be/connect"));
         return service;
     }
     
