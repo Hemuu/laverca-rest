@@ -15,6 +15,8 @@ import java.util.UUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.google.gson.Gson;
+
 import fi.methics.laverca.rest.json.JsonRequest;
 import fi.methics.laverca.rest.json.JsonResponse;
 import fi.methics.laverca.rest.json.MSS_ProfileReq;
@@ -32,10 +34,13 @@ public class MssClient {
     public static final String FORMAT_KIURU_PKCS1 = "http://www.methics.fi/KiuruMSSP/v3.2.0#PKCS1";
     public static final String FORMAT_FICOM_PKCS1 = "http://mss.ficom.fi/TS102204/v1.0.0#PKCS1";
 
+    private static final String DEFAULT_APPWD = "x";
+    
     private static final Log log = LogFactory.getLog(MssClient.class);
     
     private RestClient client;
     private String apid;
+    private String appwd = DEFAULT_APPWD;
     
     private MssClient() { }
     
@@ -78,12 +83,17 @@ public class MssClient {
             JsonRequest jReq = new JsonRequest();
             jReq.MSS_ProfileReq = new MSS_ProfileReq(msisdn.toString());
             jReq.MSS_ProfileReq.AP_Info.AP_ID    = this.apid;
-            jReq.MSS_ProfileReq.AP_Info.AP_PWD   = "x"; // TODO: this may need setting?
+            jReq.MSS_ProfileReq.AP_Info.AP_PWD   = this.appwd;
             
             JsonResponse resp = this.client.sendReq(jReq);
             
             List<MobileUserCertificate> jsonChain = resp.MSS_ProfileResp.Status.StatusDetail.ProfileQueryExtension.MobileUserCertificate;
             List<X509Certificate>     resultChain = new ArrayList<>();
+            
+            System.out.println("Got Certs with ProfileQuery:");
+            for (MobileUserCertificate cert : jsonChain) {
+                System.out.println(new Gson().toJson(cert));
+            }
             
             for (MobileUserCertificate chain : jsonChain) {
                 if (chain == null) continue;
@@ -92,6 +102,7 @@ public class MssClient {
                 if (chain.State != null && !chain.State.equals("ACTIVE")) continue; // ignore inactive certs
                 
                 if (chain.SignatureProfiles.contains(signatureprofile)) {
+                    System.out.println("Found Certificate with SignatureProfile " + signatureprofile);
                     List<X509Certificate> certs = new ArrayList<>();
                     for (String cert : chain.X509Certificate) {
                         CertificateFactory certFactory = null;
@@ -135,7 +146,7 @@ public class MssClient {
             jReq.MSS_SignatureReq.SignatureProfile = signatureprofile;
             jReq.MSS_SignatureReq.MSS_Format       = FORMAT_CMS;
             jReq.MSS_SignatureReq.AP_Info.AP_ID    = this.apid;
-            jReq.MSS_SignatureReq.AP_Info.AP_PWD   = "x";
+            jReq.MSS_SignatureReq.AP_Info.AP_PWD   = this.appwd;
             jReq.MSS_SignatureReq.AP_Info.AP_TransID = "A" + UUID.randomUUID().toString();
             
             JsonResponse jResp = this.client.sendReq(jReq);
@@ -145,6 +156,14 @@ public class MssClient {
         } catch (Exception e) {
             throw new RestException(e);
         }
+    }
+    
+    /**
+     * Set the AP_PWD value used in the requests.
+     * @param appwd AP_PWD
+     */
+    public void setApPwd(final String appwd) {
+        this.appwd = appwd;
     }
     
 }
