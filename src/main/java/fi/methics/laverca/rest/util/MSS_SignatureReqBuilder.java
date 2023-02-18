@@ -56,6 +56,11 @@ public class MSS_SignatureReqBuilder {
         return this;
     }
 
+    public MSS_SignatureReqBuilder withMssFormat(String mssFormat) {
+        this.mssFormat = mssFormat;
+        return this;
+    }
+    
     public MSS_SignatureReqBuilder withDtbs(DTBS dtbs) {
         this.dtbs = dtbs;
         return this;

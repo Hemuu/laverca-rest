@@ -37,7 +37,7 @@ public class MssDigestOutputStream extends OutputStream {
         byte[] digest = bos.toByteArray();
         System.out.println("Signing digest " + Base64.getEncoder().encodeToString(digest));
         
-        return client.sign(this.msisdn, message, digest, DTBS.MIME_SHA256, this.sigprof);
+        return client.signPKCS1(this.msisdn, message, digest, DTBS.MIME_SHA256, this.sigprof);
     }
 
     public void init() throws GeneralSecurityException {

@@ -15,7 +15,7 @@ public class RestException extends RuntimeException {
     
     public RestException(String code, String msg) {
         super(msg);
-        this.code = "900";
+        this.code = code;
     }
     
     public RestException(Throwable t) {
