@@ -204,7 +204,7 @@ public class PdfSigner extends DocumentSigner {
      * @return PAdES parameters
      */
     private PAdESSignatureParameters createParams(String msisdn, String sigprof) {
-        List<X509Certificate> chain = this.client.getCertificates(msisdn, sigprof);
+        List<X509Certificate> chain = this.client.getCertificateChain(msisdn, sigprof);
         PAdESSignatureParameters parameters = new PAdESSignatureParameters();
         parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
         parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);

@@ -5,10 +5,12 @@ package fi.methics.laverca.rest.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -100,6 +102,18 @@ public class X509Util {
         }
 
         return certs;
+    }
+    
+    public static X509Certificate parseCertificate(String b64Cert) {
+        CertificateFactory certFactory = null;
+        try {
+            certFactory = CertificateFactory.getInstance("X.509");
+            InputStream in = new ByteArrayInputStream(Base64.getDecoder().decode(b64Cert));
+            X509Certificate x509cert = (X509Certificate) certFactory.generateCertificate(in);
+            return x509cert;
+        } catch (Exception e) {
+            return null;
+        }
     }
     
 }

@@ -58,7 +58,7 @@ public class DocxSigner extends DocumentSigner {
         throws IOException, RestException 
     {
 
-        List<X509Certificate> chain = this.client.getCertificates(msisdn, signatureProfile);
+        List<X509Certificate> chain = this.client.getCertificateChain(msisdn, signatureProfile);
         
         SignatureConfig signatureConfig = new SignatureConfig();
         signatureConfig.setSigningCertificateChain(chain);
