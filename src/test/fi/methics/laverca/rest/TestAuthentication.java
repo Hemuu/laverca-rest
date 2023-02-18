@@ -45,7 +45,7 @@ public class TestAuthentication {
         MssClient client = new MssClient.Builder().withRestUrl("https://demo.methics.fi/restapi/")
                                                   .withPassword("TestAP", "9TMzfH7EKXETOB8FT5gz")
                                                   .build();
-        MssCertificate cert = client.getCertificate(MSISDN, SIGPROF);
+        MssCertificate cert = client.getCertificate(MSISDN, SignatureProfile.of(SIGPROF));
         Assertions.assertNotNull(cert, "Got certificate object");
         Assertions.assertNotNull(cert.getCertificate(), "Got X509 certificate");
         Assertions.assertNotNull(cert.getCertificateChain(), "Got X509 certificate chain");
