@@ -14,7 +14,7 @@ Usage
 Authentication
 -----
 ``` 
-MssClient client = MssClient.initWithPassword("TestAP", "9TMzfH7EKXETOB8FT5gz", "https://demo.methics.fi/restapi/")
+MssClient client = MssClient.initWithPassword("TestAP", "9TMzfH7EKXETOB8FT5gz", "https://demo.methics.fi/restapi/");
 try {
     MSS_SignatureResp resp = client.authenticate("35847001001", "Authentication test", "http://alauda.mobi/digitalSignature");
     if (resp.isSuccess()) {
@@ -29,7 +29,7 @@ PDF Signing
 -----
 
 ```
-MssClient client = MssClient.initWithPassword("TestAP", "9TMzfH7EKXETOB8FT5gz", "https://demo.methics.fi/restapi/")
+MssClient client = MssClient.initWithPassword("TestAP", "9TMzfH7EKXETOB8FT5gz", "https://demo.methics.fi/restapi/");
 PdfSigner signer = new PdfSigner(client);                                                                                       
                                                                                                                                 
 File pdf = new File("C:\\test.pdf");                                                                                            
