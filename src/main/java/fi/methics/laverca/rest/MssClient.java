@@ -4,6 +4,11 @@
 package fi.methics.laverca.rest;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -55,6 +60,19 @@ public class MssClient {
     
     private MssClient() { }
 
+    public static void main(String[] args) throws IOException {
+        MssClient client = MssClient.initWithPassword("TestAP", "9TMzfH7EKXETOB8FT5gz", "https://demo.methics.fi/restapi/");
+        PdfSigner signer = new PdfSigner(client);                                                                                      
+                                                                                                                                         
+        File doc = new File("example.pdf");
+        InputStream is = new FileInputStream(doc);
+        ByteArrayOutputStream  os = signer.signDocument("35847001001", "Please sign example.pdf", is, "http://alauda.mobi/nonRepudiation");
+        try (FileOutputStream fos = new FileOutputStream(new File("example.signed.pdf"))) {
+            os.writeTo(fos);
+            os.flush(); 
+        }
+    }
+    
     /**
      * Initialize a new MSS client with an API_KEY authentication
      * 
@@ -192,7 +210,8 @@ public class MssClient {
     }
     
     /**
-     * Sign datas. This is typically used for document signing, etc
+     * Sign data. This is typically used for document signing, etc.
+     * By default this method returns a CMS signature byte[].
      * 
      * <p>Recommended MimeType values:
      * <ul>
@@ -218,25 +237,68 @@ public class MssClient {
                        final String signatureprofile)
         throws RestException
     {
-        try {
-            JsonRequest jReq = new JsonRequest();
-            final String dtbd = message;
-            final DTBS   dtbs = new DTBS(digest, DTBS.ENCODING_BASE64, DTBS.MIME_SHA256);
+        final String dtbd = message;
+        final DTBS   dtbs = new DTBS(digest, DTBS.ENCODING_BASE64,mimetype);
 
-            jReq.MSS_SignatureReq = new MSS_SignatureReq(msisdn, dtbs, dtbd);
-            jReq.MSS_SignatureReq.SignatureProfile = signatureprofile;
-            jReq.MSS_SignatureReq.MSS_Format       = FORMAT_CMS;
-            jReq.MSS_SignatureReq.AP_Info.AP_ID    = this.apid;
-            jReq.MSS_SignatureReq.AP_Info.AP_PWD   = this.appwd;
-            jReq.MSS_SignatureReq.AP_Info.AP_TransID = "A" + UUID.randomUUID().toString();
-            
-            JsonResponse jResp = this.client.sendReq(jReq);
-            return Base64.getDecoder().decode(jResp.MSS_SignatureResp.MSS_Signature.Base64Signature);
-        } catch (RestException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RestException(e);
+        MSS_SignatureReqBuilder builder = new MSS_SignatureReqBuilder();
+        builder.withApid(this.apid);
+        builder.withAppwd(this.appwd);
+        builder.withDtbd(dtbd);
+        builder.withDtbs(dtbs);
+        builder.withMssFormat(FORMAT_CMS);
+        builder.withMsisdn(msisdn);
+
+        MSS_SignatureResp resp = this.sign(builder.build());
+        if (resp == null) {
+            throw new RestException(RestException.UNABLE_TO_PROVIDE_SERVICES, "Failed to get response");
         }
+        return resp.getRawSignature();
+    }
+    
+    /**
+     * Sign data. This is typically used for document signing, etc
+     * This method returns a PKCS1 signature byte[].
+     * 
+     * <p>Recommended MimeType values:
+     * <ul>
+     * <li>{@link DTBS#MIME_SHA1}   for pre-computed SHA-1 hashes
+     * <li>{@link DTBS#MIME_SHA256} for pre-computed SHA-256 hashes
+     * <li>{@link DTBS#MIME_SHA384} for pre-computed SHA-384 hashes
+     * <li>{@link DTBS#MIME_TEXTPLAIN} for plain text
+     * <li>{@link DTBS#MIME_STREAM} for generic binary data
+     * </ul>
+     * 
+     * @param msisdn   Phone number of the user (in international format)
+     * @param message  Message shown to the user (e.g. "Please sign contract.pdf")
+     * @param digest   Document digest
+     * @param mimetype Mime-Type of the digest (e.g. "application/x-sha256") s
+     * @param signatureprofile Signatureprofile of the wanted authentication key
+     * @return raw CMS signature
+     * @throws RestException if signature fails
+     */
+    public byte[] signPKCS1(final String msisdn,
+                            final String message,
+                            final byte[] digest, 
+                            final String mimetype,
+                            final String signatureprofile)
+        throws RestException
+    {
+        final String dtbd = message;
+        final DTBS   dtbs = new DTBS(digest, DTBS.ENCODING_BASE64, mimetype);
+
+        MSS_SignatureReqBuilder builder = new MSS_SignatureReqBuilder();
+        builder.withApid(this.apid);
+        builder.withAppwd(this.appwd);
+        builder.withDtbd(dtbd);
+        builder.withDtbs(dtbs);
+        builder.withMssFormat(FORMAT_KIURU_PKCS1);
+        builder.withMsisdn(msisdn);
+        
+        MSS_SignatureResp resp = this.sign(builder.build());
+        if (resp == null) {
+            throw new RestException(RestException.UNABLE_TO_PROVIDE_SERVICES, "Failed to get response");
+        }
+        return resp.getRawSignature();
     }
     
     /**
