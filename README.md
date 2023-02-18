@@ -30,13 +30,28 @@ PDF Signing
 
 ```
 MssClient client = MssClient.initWithPassword("TestAP", "9TMzfH7EKXETOB8FT5gz", "https://demo.methics.fi/restapi/");
-PdfSigner signer = new PdfSigner(client);                                                                                       
-                                                                                                                                
-File pdf = new File("C:\\test.pdf");                                                                                            
-InputStream is = new FileInputStream(pdf);                                                                                      
-ByteArrayOutputStream  os = signer.signDocument("35847001001", "Please sign test.pdf", is, "http://alauda.mobi/nonRepudiation");
-try (FileOutputStream fos = new FileOutputStream(new File("C:\\test.signed.pdf"))) {                                            
-    os.writeTo(fos);                                                                                                            
-    os.flush();                                                                                                                 
-}                                                                                                                               
+PdfSigner signer = new PdfSigner(client);                                                                                      
+                                                                                                                                 
+File doc = new File("example.pdf");
+InputStream is = new FileInputStream(doc);
+ByteArrayOutputStream  os = signer.signDocument("35847001001", "Please sign example.pdf", is, "http://alauda.mobi/nonRepudiation");
+try (FileOutputStream fos = new FileOutputStream(new File("example.signed.pdf"))) {
+    os.writeTo(fos);
+    os.flush(); 
+}                                                                                                                      
+```
+
+DOCX Signing
+-----
+```
+MssClient client = MssClient.initWithPassword("TestAP", "9TMzfH7EKXETOB8FT5gz", "https://demo.methics.fi/restapi/");
+DocxSigner signer = new DocxSigner(client);                                                                                      
+                                                                                                                                 
+File doc = new File("example.docx");                                                                                            
+InputStream is = new FileInputStream(doc);                                                                                       
+ByteArrayOutputStream  os = signer.signDocument("35847001001", "Please sign example.docx", is, "http://alauda.mobi/nonRepudiation");
+try (FileOutputStream fos = new FileOutputStream(new File("example.signed.docx"))) {                                            
+    os.writeTo(fos);                                                                                                             
+    os.flush();                                                                                                                  
+}
 ```
