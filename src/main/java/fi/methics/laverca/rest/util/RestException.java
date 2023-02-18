@@ -7,6 +7,8 @@ public class RestException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
+    public static final String WRONG_PARAM                = "101";
+    public static final String MISSING_PARAM              = "102";
     public static final String INVALID_SIGNATURE          = "503";
     public static final String UNABLE_TO_PROVIDE_SERVICES = "780";
     public static final String INTERNAL_ERROR             = "900";
