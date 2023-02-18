@@ -1,5 +1,5 @@
 //
-//  (c) Copyright 2003-2021 Methics Oy. All rights reserved. 
+//  (c) Copyright 2003-2023 Methics Oy. All rights reserved. 
 //
 package fi.methics.laverca.rest.util;
 
@@ -7,6 +7,8 @@ public class RestException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
+    public static final String WRONG_PARAM                = "101";
+    public static final String MISSING_PARAM              = "102";
     public static final String INVALID_SIGNATURE          = "503";
     public static final String UNABLE_TO_PROVIDE_SERVICES = "780";
     public static final String INTERNAL_ERROR             = "900";
@@ -15,7 +17,7 @@ public class RestException extends RuntimeException {
     
     public RestException(String code, String msg) {
         super(msg);
-        this.code = "900";
+        this.code = code;
     }
     
     public RestException(Throwable t) {
