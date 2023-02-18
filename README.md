@@ -13,8 +13,10 @@ Usage
 
 Authentication
 -----
-``` 
-MssClient client = MssClient.initWithPassword("TestAP", "9TMzfH7EKXETOB8FT5gz", "https://demo.methics.fi/restapi/");
+```java
+MssClient client = new MssClient.Builder().withRestUrl("https://demo.methics.fi/restapi/")
+                                          .withPassword("TestAP", "9TMzfH7EKXETOB8FT5gz") 
+                                          .build();                                       
 try {
     MSS_SignatureResp resp = client.authenticate("35847001001", "Authentication test", "http://alauda.mobi/digitalSignature");
     if (resp.isSuccess()) {
@@ -27,11 +29,12 @@ try {
 
 PDF Signing
 -----
+```java
+MssClient client = new MssClient.Builder().withRestUrl("https://demo.methics.fi/restapi/")
+                                          .withPassword("TestAP", "9TMzfH7EKXETOB8FT5gz")
+                                          .build();
+PdfSigner signer = new PdfSigner(client);
 
-```
-MssClient client = MssClient.initWithPassword("TestAP", "9TMzfH7EKXETOB8FT5gz", "https://demo.methics.fi/restapi/");
-PdfSigner signer = new PdfSigner(client);                                                                                      
-                                                                                                                                 
 File doc = new File("example.pdf");
 InputStream is = new FileInputStream(doc);
 ByteArrayOutputStream  os = signer.signDocument("35847001001", "Please sign example.pdf", is, "http://alauda.mobi/nonRepudiation");
@@ -43,10 +46,12 @@ try (FileOutputStream fos = new FileOutputStream(new File("example.signed.pdf"))
 
 DOCX Signing
 -----
-```
-MssClient client = MssClient.initWithPassword("TestAP", "9TMzfH7EKXETOB8FT5gz", "https://demo.methics.fi/restapi/");
+```java
+MssClient client = new MssClient.Builder().withRestUrl("https://demo.methics.fi/restapi/")
+                                          .withPassword("TestAP", "9TMzfH7EKXETOB8FT5gz")
+                                          .build();
 DocxSigner signer = new DocxSigner(client);                                                                                      
-                                                                                                                                 
+
 File doc = new File("example.docx");                                                                                            
 InputStream is = new FileInputStream(doc);                                                                                       
 ByteArrayOutputStream  os = signer.signDocument("35847001001", "Please sign example.docx", is, "http://alauda.mobi/nonRepudiation");
