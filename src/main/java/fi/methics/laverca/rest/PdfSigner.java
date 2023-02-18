@@ -6,8 +6,6 @@ package fi.methics.laverca.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.cert.X509Certificate;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -38,6 +36,8 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import fi.methics.laverca.rest.util.DTBS;
 import fi.methics.laverca.rest.util.DocumentSigner;
 import fi.methics.laverca.rest.util.LavercaPAdESService;
+import fi.methics.laverca.rest.util.MssCertificate;
+import fi.methics.laverca.rest.util.SignatureProfile;
 
 /**
  * PDF document signing helper class
@@ -204,15 +204,15 @@ public class PdfSigner extends DocumentSigner {
      * @return PAdES parameters
      */
     private PAdESSignatureParameters createParams(String msisdn, String sigprof) {
-        List<X509Certificate> chain = this.client.getCertificateChain(msisdn, sigprof);
+        MssCertificate cert = this.client.getCertificate(msisdn, SignatureProfile.of(sigprof));
         PAdESSignatureParameters parameters = new PAdESSignatureParameters();
         parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
         parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
         parameters.setDigestAlgorithm(DIGEST_ALG);
         parameters.setSignatureSize(25600);
         parameters.setArchiveTimestampParameters(new TimestampParameters(DIGEST_ALG));
-        parameters.setCertificateChain(chain.stream().map(CertificateToken::new).collect(Collectors.toList()));
-        parameters.setSigningCertificate(new CertificateToken(chain.get(0)));
+        parameters.setCertificateChain(cert.getCertificateChain().stream().map(CertificateToken::new).collect(Collectors.toList()));
+        parameters.setSigningCertificate(new CertificateToken(cert.getCertificate()));
         if (this.form != null && this.sigRectangle != null) {
             parameters.setSignatureFieldId(FIELD_NAME + msisdn);
         }

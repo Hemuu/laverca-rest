@@ -25,7 +25,9 @@ import fi.methics.laverca.rest.docx.DummyPrivateKey;
 import fi.methics.laverca.rest.docx.MssDOMXMLSignatureFactory;
 import fi.methics.laverca.rest.docx.MssSignatureInfo;
 import fi.methics.laverca.rest.util.DocumentSigner;
+import fi.methics.laverca.rest.util.MssCertificate;
 import fi.methics.laverca.rest.util.RestException;
+import fi.methics.laverca.rest.util.SignatureProfile;
 
 /**
  * DOCX document signing helper class
@@ -58,10 +60,10 @@ public class DocxSigner extends DocumentSigner {
         throws IOException, RestException 
     {
 
-        List<X509Certificate> chain = this.client.getCertificateChain(msisdn, signatureProfile);
+        MssCertificate cert = this.client.getCertificate(msisdn, SignatureProfile.of(signatureProfile));
         
         SignatureConfig signatureConfig = new SignatureConfig();
-        signatureConfig.setSigningCertificateChain(chain);
+        signatureConfig.setSigningCertificateChain(cert.getCertificateChain());
         signatureConfig.setIncludeEntireCertificateChain(true);
         signatureConfig.setKey(new DummyPrivateKey());
 
