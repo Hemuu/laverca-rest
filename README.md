@@ -40,7 +40,6 @@ InputStream is = new FileInputStream(doc);
 ByteArrayOutputStream  os = signer.signDocument("35847001001", "Please sign example.pdf", is, SignatureProfile.of("http://alauda.mobi/digitalSignature"));
 try (FileOutputStream fos = new FileOutputStream(new File("example.signed.pdf"))) {
     os.writeTo(fos);
-    os.flush(); 
 }                                                                                                                      
 ```
 
@@ -57,6 +56,5 @@ InputStream is = new FileInputStream(doc);
 ByteArrayOutputStream  os = signer.signDocument("35847001001", "Please sign example.docx", is, SignatureProfile.of("http://alauda.mobi/digitalSignature"));
 try (FileOutputStream fos = new FileOutputStream(new File("example.signed.docx"))) {                                            
     os.writeTo(fos);                                                                                                             
-    os.flush();                                                                                                                  
 }
 ```
