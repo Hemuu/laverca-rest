@@ -45,7 +45,7 @@ ByteArrayOutputStream  os = signer.signDocument("35847001001",
                                                 SignatureProfile.of("http://alauda.mobi/digitalSignature"));
 try (FileOutputStream fos = new FileOutputStream(new File("example.signed.pdf"))) {
     os.writeTo(fos);
-}                                                                                                                      
+}
 ```
 
 DOCX Signing
@@ -54,15 +54,15 @@ DOCX Signing
 MssClient client = new MssClient.Builder().withRestUrl("https://demo.methics.fi/restapi/")
                                           .withPassword("TestAP", "9TMzfH7EKXETOB8FT5gz")
                                           .build();
-DocxSigner signer = new DocxSigner(client);                                                                                      
+DocxSigner signer = new DocxSigner(client);
 
-File doc = new File("example.docx");                                                                                            
-InputStream is = new FileInputStream(doc);                                                                                       
-ByteArrayOutputStream  os = signer.signDocument("35847001001", 
-                                                "Please sign example.docx", 
-                                                is, 
+File doc = new File("example.docx");
+InputStream is = new FileInputStream(doc);
+ByteArrayOutputStream  os = signer.signDocument("35847001001",
+                                                "Please sign example.docx",
+                                                is,
                                                 SignatureProfile.of("http://alauda.mobi/digitalSignature"));
-try (FileOutputStream fos = new FileOutputStream(new File("example.signed.docx"))) {                                            
-    os.writeTo(fos);                                                                                                             
+try (FileOutputStream fos = new FileOutputStream(new File("example.signed.docx"))) {
+    os.writeTo(fos);
 }
 ```
