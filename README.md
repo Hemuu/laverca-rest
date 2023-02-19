@@ -18,7 +18,7 @@ MssClient client = new MssClient.Builder().withRestUrl("https://demo.methics.fi/
                                           .withPassword("TestAP", "9TMzfH7EKXETOB8FT5gz") 
                                           .build();                                       
 try {
-    MSS_SignatureResp resp = client.authenticate("35847001001", "Authentication test", "http://alauda.mobi/digitalSignature");
+    MSS_SignatureResp resp = client.authenticate("35847001001", "Authentication test", SignatureProfile.of("http://alauda.mobi/digitalSignature"));
     if (resp.isSuccess()) {
         System.out.println("Successfully authenticated " + resp.getSubjectDN()); 
     }
@@ -37,7 +37,7 @@ PdfSigner signer = new PdfSigner(client);
 
 File doc = new File("example.pdf");
 InputStream is = new FileInputStream(doc);
-ByteArrayOutputStream  os = signer.signDocument("35847001001", "Please sign example.pdf", is, "http://alauda.mobi/nonRepudiation");
+ByteArrayOutputStream  os = signer.signDocument("35847001001", "Please sign example.pdf", is, SignatureProfile.of("http://alauda.mobi/digitalSignature"));
 try (FileOutputStream fos = new FileOutputStream(new File("example.signed.pdf"))) {
     os.writeTo(fos);
     os.flush(); 
@@ -54,7 +54,7 @@ DocxSigner signer = new DocxSigner(client);
 
 File doc = new File("example.docx");                                                                                            
 InputStream is = new FileInputStream(doc);                                                                                       
-ByteArrayOutputStream  os = signer.signDocument("35847001001", "Please sign example.docx", is, "http://alauda.mobi/nonRepudiation");
+ByteArrayOutputStream  os = signer.signDocument("35847001001", "Please sign example.docx", is, SignatureProfile.of("http://alauda.mobi/digitalSignature"));
 try (FileOutputStream fos = new FileOutputStream(new File("example.signed.docx"))) {                                            
     os.writeTo(fos);                                                                                                             
     os.flush();                                                                                                                  
