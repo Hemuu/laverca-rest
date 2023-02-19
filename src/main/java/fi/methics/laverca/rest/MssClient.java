@@ -21,7 +21,7 @@ import fi.methics.laverca.rest.util.MSS_SignatureReqBuilder;
 import fi.methics.laverca.rest.util.MssCertificate;
 import fi.methics.laverca.rest.util.RestClient;
 import fi.methics.laverca.rest.util.RestClient.AuthnMode;
-import fi.methics.laverca.rest.util.RestException;
+import fi.methics.laverca.rest.util.MssRestException;
 import fi.methics.laverca.rest.util.SignatureProfile;
 import fi.methics.laverca.rest.util.X509Util;
 
@@ -64,20 +64,23 @@ public class MssClient {
      * @param msisdn           Phone number of the user (in international format)
      * @param signatureprofile Signatureprofile of the wanted authentication key
      * @return Authentication response
-     * @throws RestException if signature fails
+     * @throws MssRestException if signature fails
      */
     public MSS_SignatureResp authenticate(final String msisdn, 
                                           final String message, 
-                                          final String signatureprofile)
-        throws RestException
+                                          final SignatureProfile signatureprofile)
+        throws MssRestException
     {
+        if (signatureprofile == null) {
+            throw new MssRestException(MssRestException.MISSING_PARAM, "Missing SignatureProfile in request");
+        }
         try {
             JsonRequest jReq = new JsonRequest();
             final String dtbd = message;
             final DTBS   dtbs = new DTBS(dtbd);
 
             jReq.MSS_SignatureReq = new MSS_SignatureReq(msisdn, dtbs, null);
-            jReq.MSS_SignatureReq.SignatureProfile = signatureprofile;
+            jReq.MSS_SignatureReq.SignatureProfile = signatureprofile.getUri();
             jReq.MSS_SignatureReq.MSS_Format       = FORMAT_CMS;
             jReq.MSS_SignatureReq.AP_Info.AP_ID    = this.apid;
             jReq.MSS_SignatureReq.AP_Info.AP_PWD   = this.appwd;
@@ -85,10 +88,10 @@ public class MssClient {
             
             JsonResponse jResp = this.client.sendReq(jReq);
             return jResp.MSS_SignatureResp;
-        } catch (RestException e) {
+        } catch (MssRestException e) {
             throw e;
         } catch (Exception e) {
-            throw new RestException(e);
+            throw new MssRestException(e);
         }
     }
     
@@ -126,10 +129,10 @@ public class MssClient {
                 }
             }
             return result;
-        } catch (RestException e) {
+        } catch (MssRestException e) {
             throw e;
         } catch (Exception e) {
-            throw new RestException(e);
+            throw new MssRestException(e);
         }
     }
     
@@ -145,14 +148,14 @@ public class MssClient {
      * @param msisdn            Phone number of the user (in international format)
      * @param signatureprofile  Signatureprofile of the wanted certificate chain
      * @return Certificate if available. If not, returns an empty MssCertificate object.
-     * @throws RestException
+     * @throws MssRestException
      */
     public MssCertificate getCertificate(final String msisdn, 
                                          final SignatureProfile signatureprofile) 
-        throws RestException
+        throws MssRestException
     {
         if (signatureprofile == null) {
-            throw new RestException(RestException.MISSING_PARAM, "Missing SignatureProfile in request");
+            throw new MssRestException(MssRestException.MISSING_PARAM, "Missing SignatureProfile in request");
         }
         try {
             JsonRequest jReq = new JsonRequest();
@@ -181,10 +184,10 @@ public class MssClient {
                 }
             }
             return result;
-        } catch (RestException e) {
+        } catch (MssRestException e) {
             throw e;
         } catch (Exception e) {
-            throw new RestException(e);
+            throw new MssRestException(e);
         }
     }
     
@@ -207,15 +210,18 @@ public class MssClient {
      * @param mimetype Mime-Type of the digest (e.g. "application/x-sha256") s
      * @param signatureprofile Signatureprofile of the wanted authentication key
      * @return raw CMS signature
-     * @throws RestException if signature fails
+     * @throws MssRestException if signature fails
      */
     public byte[] sign(final String msisdn,
                        final String message,
                        final byte[] digest, 
                        final String mimetype,
-                       final String signatureprofile)
-        throws RestException
+                       final SignatureProfile signatureprofile)
+        throws MssRestException
     {
+        if (signatureprofile == null) {
+            throw new MssRestException(MssRestException.MISSING_PARAM, "Missing SignatureProfile in request");
+        }
         final String dtbd = message;
         final DTBS   dtbs = new DTBS(digest, DTBS.ENCODING_BASE64,mimetype);
 
@@ -226,10 +232,11 @@ public class MssClient {
         builder.withDtbs(dtbs);
         builder.withMssFormat(FORMAT_CMS);
         builder.withMsisdn(msisdn);
+        builder.withSignatureProfile(signatureprofile);
 
         MSS_SignatureResp resp = this.sign(builder.build());
         if (resp == null) {
-            throw new RestException(RestException.UNABLE_TO_PROVIDE_SERVICES, "Failed to get response");
+            throw new MssRestException(MssRestException.UNABLE_TO_PROVIDE_SERVICES, "Failed to get response");
         }
         return resp.getRawSignature();
     }
@@ -253,15 +260,18 @@ public class MssClient {
      * @param mimetype Mime-Type of the digest (e.g. "application/x-sha256") s
      * @param signatureprofile Signatureprofile of the wanted authentication key
      * @return raw CMS signature
-     * @throws RestException if signature fails
+     * @throws MssRestException if signature fails
      */
     public byte[] signPKCS1(final String msisdn,
                             final String message,
                             final byte[] digest, 
                             final String mimetype,
-                            final String signatureprofile)
-        throws RestException
+                            final SignatureProfile signatureprofile)
+        throws MssRestException
     {
+        if (signatureprofile == null) {
+            throw new MssRestException(MssRestException.MISSING_PARAM, "Missing SignatureProfile in request");
+        }
         final String dtbd = message;
         final DTBS   dtbs = new DTBS(digest, DTBS.ENCODING_BASE64, mimetype);
 
@@ -272,10 +282,11 @@ public class MssClient {
         builder.withDtbs(dtbs);
         builder.withMssFormat(FORMAT_KIURU_PKCS1);
         builder.withMsisdn(msisdn);
-        
+        builder.withSignatureProfile(signatureprofile);
+
         MSS_SignatureResp resp = this.sign(builder.build());
         if (resp == null) {
-            throw new RestException(RestException.UNABLE_TO_PROVIDE_SERVICES, "Failed to get response");
+            throw new MssRestException(MssRestException.UNABLE_TO_PROVIDE_SERVICES, "Failed to get response");
         }
         return resp.getRawSignature();
     }
@@ -284,19 +295,19 @@ public class MssClient {
      * Advanced method that can be used to send any MSS_SignatureReq to the MSSP.
      * @param req MSS_SignatureReq
      * @return MSS_SignatureREsp
-     * @throws RestException if signature fails
+     * @throws MssRestException if signature fails
      * @see MSS_SignatureReqBuilder
      */
-    public MSS_SignatureResp sign(final MSS_SignatureReq req) throws RestException {
+    public MSS_SignatureResp sign(final MSS_SignatureReq req) throws MssRestException {
         try {
             JsonRequest jReq = new JsonRequest();
             jReq.MSS_SignatureReq = req;
             JsonResponse jResp = this.client.sendReq(jReq);
             return jResp.MSS_SignatureResp;
-        } catch (RestException e) {
+        } catch (MssRestException e) {
             throw e;
         } catch (Exception e) {
-            throw new RestException(e);
+            throw new MssRestException(e);
         }
     }
     

@@ -79,21 +79,21 @@ public class RestClient {
      * Send REST JSON request
      * @param jReq JSON request
      * @return JSON response
-     * @throws RestException 
+     * @throws MssRestException 
      */
-    public JsonResponse sendReq(final JsonRequest jReq) throws RestException {
+    public JsonResponse sendReq(final JsonRequest jReq) throws MssRestException {
         final String req  = jReq.toJson();
         final String resp = this.sendReq(req);
         try {
             JsonResponse jResp = JsonResponse.fromString(resp);
             if (jResp.isFault()) {
-                throw new RestException(jResp.getFaultCode(), jResp.getFaultDetail());
+                throw new MssRestException(jResp.getFaultCode(), jResp.getFaultDetail());
             }
             return jResp;
-        } catch (RestException e) {
+        } catch (MssRestException e) {
             throw e;
         } catch (Exception e) {
-            throw new RestException(RestException.INTERNAL_ERROR, e.getMessage());
+            throw new MssRestException(MssRestException.INTERNAL_ERROR, e.getMessage());
         }
     }
     
@@ -101,9 +101,9 @@ public class RestClient {
      * Send HTTP Post request (multipart)
      * @param jReq JSON Request
      * @return String Response
-     * @throws RestException 
+     * @throws MssRestException 
      */
-    private String sendReq(final String jReq) throws RestException {
+    private String sendReq(final String jReq) throws MssRestException {
         log.debug("Connecting to " + this.resturl);
         log.debug("Sending request " + jReq);
         
@@ -123,9 +123,9 @@ public class RestClient {
      * @param userId    AP UserID
      * @param apiKey    AP API_KEY
      * @return String Response
-     * @throws RestException 
+     * @throws MssRestException 
      */
-    private String sendHmacReq(final String req) throws RestException {
+    private String sendHmacReq(final String req) throws MssRestException {
         
         String userid = this.getUserId(this.apid);
         String apikey = this.apikey;
@@ -135,7 +135,7 @@ public class RestClient {
             return client.send(req, this.resturl);
         } catch (IOException e) {
             log.error("Connection to " + this.resturl + " failed: " + e.getMessage());
-            throw new RestException(RestException.UNABLE_TO_PROVIDE_SERVICES, e.getMessage());
+            throw new MssRestException(MssRestException.UNABLE_TO_PROVIDE_SERVICES, e.getMessage());
         }
     }
     
@@ -146,9 +146,9 @@ public class RestClient {
      * @param username  AP UserID
      * @param password  AP RestPassword
      * @return String Response
-     * @throws RestException 
+     * @throws MssRestException 
      */
-    private String sendBasicReq(final String req) throws RestException {
+    private String sendBasicReq(final String req) throws MssRestException {
         
         try {
             CredentialsProvider provider = new BasicCredentialsProvider();
@@ -167,7 +167,7 @@ public class RestClient {
             return this.getResponseBody(this.httpClient.execute(post, ctx));
         } catch (IOException e) {
             log.error("Connection to " + this.resturl + " failed (TestUtil): " + e.getMessage());
-            throw new RestException(RestException.UNABLE_TO_PROVIDE_SERVICES, e.getMessage());
+            throw new MssRestException(MssRestException.UNABLE_TO_PROVIDE_SERVICES, e.getMessage());
         }
     }
     

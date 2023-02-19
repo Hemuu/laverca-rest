@@ -91,10 +91,11 @@ public class JsonResponse {
      * @return Fault code. Defaults to "900" if not found.
      */
     public String getFaultCode() {
-        if (this.Fault            == null) return "900";
-        if (this.Fault.Code       == null) return "900";
-        if (this.Fault.Code.Value == null) return "900";
-        return this.Fault.Code.Value;
+        if (this.Fault              == null) return "900";
+        if (this.Fault.Code         == null) return "900";
+        if (this.Fault.Code.SubCode == null) return "900";
+        if (this.Fault.Code.SubCode.Value == null) return "900";
+        return this.Fault.Code.SubCode.Value.replace("_", "");
     }
     
     public String toJson() {

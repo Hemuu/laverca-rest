@@ -17,9 +17,20 @@ public abstract class DocumentSigner {
         this.client = client;
     }
     
+    /**
+     * Sign a document
+     * 
+     * @param msisdn  User's phone number (MSISDN, international format)
+     * @param message Message to display to user (e.g. "Sign document x")
+     * @param is      InputStream containing the document
+     * @param signatureProfile SignatureProfile URI
+     * @return Signed document OutputStream
+     * @throws IOException      if document manipulation fails
+     * @throws MssRestException if signing fails
+     */
     public abstract ByteArrayOutputStream signDocument(final String msisdn,
                                                        final String message,
                                                        final InputStream is,
-                                                       final String signatureProfile) throws IOException, RestException;
+                                                       final SignatureProfile signatureProfile) throws IOException, MssRestException;
     
 }

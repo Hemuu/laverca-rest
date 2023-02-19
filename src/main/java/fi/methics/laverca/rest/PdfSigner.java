@@ -133,7 +133,7 @@ public class PdfSigner extends DocumentSigner {
     public ByteArrayOutputStream signDocument(final String msisdn,
                                               final String message,
                                               final InputStream is,
-                                              final String signatureProfile) 
+                                              final SignatureProfile signatureProfile) 
         throws IOException
     {
         
@@ -203,8 +203,8 @@ public class PdfSigner extends DocumentSigner {
      * @param sigprof SignatureProfile 
      * @return PAdES parameters
      */
-    private PAdESSignatureParameters createParams(String msisdn, String sigprof) {
-        MssCertificate cert = this.client.getCertificate(msisdn, SignatureProfile.of(sigprof));
+    private PAdESSignatureParameters createParams(String msisdn, SignatureProfile sigprof) {
+        MssCertificate cert = this.client.getCertificate(msisdn, sigprof);
         PAdESSignatureParameters parameters = new PAdESSignatureParameters();
         parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
         parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
