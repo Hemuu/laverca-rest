@@ -20,6 +20,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import fi.methics.laverca.rest.MssClient;
+import fi.methics.laverca.rest.util.SignatureProfile;
 
 /**
  * Apache POI SignatureInfo extension that uses {@link MssDigestOutputStream}
@@ -31,10 +32,10 @@ public class MssSignatureInfo extends SignatureInfo {
 
     private MssClient client;
     private String    msisdn;
-    private String    sigprof;
     private String    message;
-    
-    public MssSignatureInfo(final MssClient client, final String msisdn, final String message, final String sigprof) {
+    private SignatureProfile sigprof;
+
+    public MssSignatureInfo(final MssClient client, final String msisdn, final String message, final SignatureProfile sigprof) {
         this.client  = client;
         this.msisdn  = msisdn;
         this.sigprof = sigprof;

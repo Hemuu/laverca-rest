@@ -114,7 +114,18 @@ public class MSS_SignatureReqBuilder {
         this.mssFormat = mssFormat;
         return this;
     }
-
+    
+    /**
+     * Set SignatureProfile
+     * @param signatureprofile SignatureProfile
+     * @return this builder
+     */
+    public MSS_SignatureReqBuilder withSignatureProfile(SignatureProfile signatureprofile) {
+        if (signatureprofile == null) return this;
+        this.signatureprofile = signatureprofile.getUri();
+        return this;
+    }
+    
     /**
      * Set SignatureProfile
      * @param signatureprofile SignatureProfile

@@ -12,6 +12,7 @@ import org.apache.poi.poifs.crypt.HashAlgorithm;
 
 import fi.methics.laverca.rest.MssClient;
 import fi.methics.laverca.rest.util.DTBS;
+import fi.methics.laverca.rest.util.SignatureProfile;
 
 public class MssDigestOutputStream extends OutputStream {
     
@@ -19,10 +20,10 @@ public class MssDigestOutputStream extends OutputStream {
     
     private MssClient client;
     private String    msisdn;
-    private String    sigprof;
     private String    message;
-    
-    public MssDigestOutputStream(MssClient client, String msisdn, String message, String sigprof) {
+    private SignatureProfile sigprof;
+
+    public MssDigestOutputStream(MssClient client, String msisdn, String message, SignatureProfile sigprof) {
         this.client  = client;
         this.msisdn  = msisdn;
         this.sigprof = sigprof;

@@ -26,7 +26,7 @@ import fi.methics.laverca.rest.docx.MssDOMXMLSignatureFactory;
 import fi.methics.laverca.rest.docx.MssSignatureInfo;
 import fi.methics.laverca.rest.util.DocumentSigner;
 import fi.methics.laverca.rest.util.MssCertificate;
-import fi.methics.laverca.rest.util.RestException;
+import fi.methics.laverca.rest.util.MssRestException;
 import fi.methics.laverca.rest.util.SignatureProfile;
 
 /**
@@ -56,11 +56,11 @@ public class DocxSigner extends DocumentSigner {
     public ByteArrayOutputStream signDocument(final String msisdn,
                                               final String message,
                                               final InputStream is,
-                                              final String signatureProfile)
-        throws IOException, RestException 
+                                              final SignatureProfile signatureProfile)
+        throws IOException, MssRestException 
     {
 
-        MssCertificate cert = this.client.getCertificate(msisdn, SignatureProfile.of(signatureProfile));
+        MssCertificate cert = this.client.getCertificate(msisdn, signatureProfile);
         
         SignatureConfig signatureConfig = new SignatureConfig();
         signatureConfig.setSigningCertificateChain(cert.getCertificateChain());
