@@ -4,6 +4,7 @@
   <artifactId>laverca-rest</artifactId>
   <version>1.0.0</version>
   <name>Laverca REST MSS client</name>
+  
   <build>
     <plugins>
       <plugin>
@@ -16,7 +17,8 @@
       </plugin>
     </plugins>
   </build>
-    <repositories>
+  
+  <repositories>
     <repository>
       <id>cefdigital</id>
       <name>cefdigital</name>
