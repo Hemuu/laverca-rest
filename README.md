@@ -66,3 +66,24 @@ try (FileOutputStream fos = new FileOutputStream(new File("example.signed.docx")
     os.writeTo(fos);
 }
 ```
+
+Manual Building
+=====
+
+Building a JAR
+-----
+```bash
+mvn clean package
+```
+
+Building a stand-alone JAR with included dependencies
+-----
+```bash
+mvn clean package assembly:single
+```
+
+Running the PDF signing example
+-----
+```bash
+java -jar target/laverca-rest-1.0.0-jar-with-dependencies.jar fi.methics.laverca.rest.SignPDF
+```
