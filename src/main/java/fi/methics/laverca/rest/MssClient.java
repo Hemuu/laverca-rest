@@ -316,7 +316,8 @@ public class MssClient {
      */
     public static class Builder {
 
-        private String resturl;
+        private String restUrl;
+        private String secondaryUrl;
         private String apid;
         private String apname;
         private String password;
@@ -336,18 +337,29 @@ public class MssClient {
                 client.client.setApName(this.apname);
                 client.client.setPassword(this.password);
             }
-            client.client.setRestUrl(this.resturl);
+            client.client.setRestUrl(this.restUrl);
+            client.client.setSecondaryUrl(this.secondaryUrl);
             client.appwd = this.appwd;
             return client;
         }
         
         /**
-         * Set RESTAPI service URL
+         * Set primary RESTAPI service URL
          * @param resturl RESTAPI service URL
          * @return this builder
          */ 
         public Builder withRestUrl(String resturl) {
-            this.resturl = resturl;
+            this.restUrl = resturl;
+            return this;
+        }
+        
+        /**
+         * Set alternative RESTAPI service URL
+         * @param alternateUrl RESTAPI service URL
+         * @return this builder
+         */ 
+        public Builder withSecondaryUrl(String alternateUrl) {
+            this.secondaryUrl = alternateUrl;
             return this;
         }
         

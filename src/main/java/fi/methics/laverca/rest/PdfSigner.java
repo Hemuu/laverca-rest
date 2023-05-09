@@ -37,6 +37,7 @@ import fi.methics.laverca.rest.util.DTBS;
 import fi.methics.laverca.rest.util.DocumentSigner;
 import fi.methics.laverca.rest.util.LavercaPAdESService;
 import fi.methics.laverca.rest.util.MssCertificate;
+import fi.methics.laverca.rest.util.MssRestException;
 import fi.methics.laverca.rest.util.SignatureProfile;
 
 /**
@@ -205,6 +206,11 @@ public class PdfSigner extends DocumentSigner {
      */
     private PAdESSignatureParameters createParams(String msisdn, SignatureProfile sigprof) {
         MssCertificate cert = this.client.getCertificate(msisdn, sigprof);
+        
+        if (cert.getCertificate() == null) {
+            throw new MssRestException(MssRestException.UNKNOWN_USER, "Failed to get user certificate");
+        }
+        
         PAdESSignatureParameters parameters = new PAdESSignatureParameters();
         parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
         parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);

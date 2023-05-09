@@ -62,6 +62,10 @@ public class DocxSigner extends DocumentSigner {
 
         MssCertificate cert = this.client.getCertificate(msisdn, signatureProfile);
         
+        if (cert.getCertificate() == null) {
+            throw new MssRestException(MssRestException.UNKNOWN_USER, "Failed to get user certificate");
+        }
+        
         SignatureConfig signatureConfig = new SignatureConfig();
         signatureConfig.setSigningCertificateChain(cert.getCertificateChain());
         signatureConfig.setIncludeEntireCertificateChain(true);
