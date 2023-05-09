@@ -73,8 +73,8 @@ public class RestClient {
         this.resturl = resturl;
     }
     
-    public void setSecondaryUrl(final String resturl) {
-        this.resturl = resturl;
+    public void setSecondaryUrl(final String secondaryUrl) {
+        this.secondaryUrl = secondaryUrl;
     }
     
     public void setAuthnMode(final AuthnMode mode) {

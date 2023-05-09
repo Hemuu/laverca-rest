@@ -76,4 +76,16 @@ public class TestAuthentication {
         Assertions.assertNotNull(cert.getCertificateChain(), "Got X509 certificate chain");
     }
     
+
+    
+    @Test
+    public void testSecondaryUrl() {
+        MssClient client = new MssClient.Builder().withRestUrl("http://localhost")
+                                                  .withSecondaryUrl("https://demo.methics.fi/restapi/")
+                                                  .withPassword("TestAP", "9TMzfH7EKXETOB8FT5gz")
+                                                  .build();
+        MSS_SignatureResp resp = client.authenticate(MSISDN, "testAuthentication", SIGPROF);
+        Assertions.assertTrue(resp.isSuccessful(), "Authentication succeeded");
+    }
+    
 }
