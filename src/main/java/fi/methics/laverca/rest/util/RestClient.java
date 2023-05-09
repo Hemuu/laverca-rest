@@ -5,6 +5,7 @@ package fi.methics.laverca.rest.util;
 
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Base64;
 
@@ -37,6 +38,7 @@ public class RestClient {
     private HttpClient httpClient;
 
     private String resturl;
+    private String secondaryUrl;
     
     private String apid;
     private String apikey;
@@ -68,6 +70,10 @@ public class RestClient {
     }
     
     public void setRestUrl(final String resturl) {
+        this.resturl = resturl;
+    }
+    
+    public void setSecondaryUrl(final String resturl) {
         this.resturl = resturl;
     }
     
@@ -135,6 +141,15 @@ public class RestClient {
             return client.send(req, this.resturl);
         } catch (IOException e) {
             log.error("Connection to " + this.resturl + " failed: " + e.getMessage());
+            try {
+                if (this.secondaryUrl != null) {
+                    HmacHttpClient client = new HmacHttpClient(this.httpClient, userid, apikey);
+                    return client.send(req, this.secondaryUrl);
+                }
+            } catch (IOException e2) {
+                log.error("Connection to " + this.secondaryUrl + " failed: " + e.getMessage());
+                throw new MssRestException(MssRestException.UNABLE_TO_PROVIDE_SERVICES, e2.getMessage());
+            }
             throw new MssRestException(MssRestException.UNABLE_TO_PROVIDE_SERVICES, e.getMessage());
         }
     }
@@ -151,22 +166,19 @@ public class RestClient {
     private String sendBasicReq(final String req) throws MssRestException {
         
         try {
-            CredentialsProvider provider = new BasicCredentialsProvider();
-            provider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(this.apname, this.password));
-            HttpClientContext ctx = HttpClientContext.create();
-            
-            URL url = new URL(this.resturl);
-            AuthCache authCache = new BasicAuthCache();
-            HttpHost targetHost = new HttpHost(url.getHost(), url.getPort(), url.getProtocol());
-            authCache.put(targetHost, new BasicScheme());
-            
-            ctx.setAuthCache(authCache);
-            ctx.setCredentialsProvider(provider);
-
             HttpPost post = this.createPost(req, this.resturl);
-            return this.getResponseBody(this.httpClient.execute(post, ctx));
+            return this.getResponseBody(this.httpClient.execute(post, this.createContext(this.resturl)));
         } catch (IOException e) {
-            log.error("Connection to " + this.resturl + " failed (TestUtil): " + e.getMessage());
+            log.error("Connection to " + this.resturl + " failed: " + e.getMessage());
+            if (this.secondaryUrl != null) {
+                try {
+                    HttpPost post = this.createPost(req, this.secondaryUrl);
+                    return this.getResponseBody(this.httpClient.execute(post, this.createContext(this.secondaryUrl)));
+                } catch (IOException e2) {
+                    log.error("Connection to " + this.secondaryUrl + " failed: " + e.getMessage());
+                    throw new MssRestException(MssRestException.UNABLE_TO_PROVIDE_SERVICES, e.getMessage());
+                }
+            }
             throw new MssRestException(MssRestException.UNABLE_TO_PROVIDE_SERVICES, e.getMessage());
         }
     }
@@ -183,6 +195,32 @@ public class RestClient {
             log.debug("Could not encode " + apid + " to base64");
             return apid;
         }
+    }
+    
+    /**
+     * Create a HTTP client context for given URL
+     * @param _url URL
+     * @return Context
+     * @throws MssRestException
+     */
+    private HttpClientContext createContext(final String _url) throws MssRestException {
+        HttpClientContext ctx = HttpClientContext.create();
+        try {
+            CredentialsProvider provider = new BasicCredentialsProvider();
+            provider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(this.apname, this.password));
+            
+            URL url = new URL(_url);
+            AuthCache authCache = new BasicAuthCache();
+            HttpHost targetHost = new HttpHost(url.getHost(), url.getPort(), url.getProtocol());
+            authCache.put(targetHost, new BasicScheme());
+            
+            ctx.setAuthCache(authCache);
+            ctx.setCredentialsProvider(provider);
+        } catch (MalformedURLException e) {
+            log.error("Connection to " + _url + " failed: " + e.getMessage());
+            throw new MssRestException(MssRestException.UNABLE_TO_PROVIDE_SERVICES, e.getMessage());
+        }
+        return ctx;
     }
     
     /**
