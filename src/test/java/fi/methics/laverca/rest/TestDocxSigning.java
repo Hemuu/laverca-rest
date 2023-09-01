@@ -24,13 +24,13 @@ public class TestDocxSigning {
 
     
     @Test
-    public void testSignPdf() throws Exception {
+    public void testSignDocx() throws Exception {
         MssClient client = new MssClient.Builder().withRestUrl("https://demo.methics.fi/restapi/")
                                                   .withPassword("TestAP", "9TMzfH7EKXETOB8FT5gz")
                                                   .build();
         DocxSigner signer = new DocxSigner(client);                                                                                      
-        File pdf = new File("example.docx");
-        InputStream is = new FileInputStream(pdf);
+        File docx = new File("example.docx");
+        InputStream is = new FileInputStream(docx);
         ByteArrayOutputStream  os = signer.signDocument(MSISDN, "Please sign example.docx", is, SIGPROF);
         try (FileOutputStream fos = new FileOutputStream(new File("example.signed.docx"))) {
             os.writeTo(fos);
