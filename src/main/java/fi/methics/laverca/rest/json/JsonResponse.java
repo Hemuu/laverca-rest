@@ -25,6 +25,9 @@ public class JsonResponse {
 
     @SerializedName("MSS_ProfileResp")
     public MSS_ProfileResp   MSS_ProfileResp;
+
+    @SerializedName("MSS_RegistrationResp")
+    public MSS_RegistrationResp MSS_RegistrationResp;
     
     /**
      * @param resp
@@ -53,6 +56,9 @@ public class JsonResponse {
         }
         if (this.MSS_ProfileResp != null) {
             return ResponseType.MSS_ProfileResp;
+        }
+        if (this.MSS_RegistrationResp != null) {
+            return ResponseType.MSS_RegistrationResp;
         }
         
         return ResponseType.UNKNOWN;

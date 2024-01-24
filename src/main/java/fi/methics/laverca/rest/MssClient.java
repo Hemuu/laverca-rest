@@ -312,6 +312,14 @@ public class MssClient {
     }
     
     /**
+     * Get the underlying REST client
+     * @return REST client
+     */
+    protected RestClient getRestClient() {
+        return this.client;
+    }
+    
+    /**
      * MSS Client Builder
      */
     public static class Builder {
