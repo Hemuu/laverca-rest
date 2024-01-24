@@ -19,14 +19,6 @@ public class UseCase {
     public String Name;
     
     /**
-     * Display name of the UseCase.
-     * <p>
-     * JSON name: "DisplayName"
-     */
-    @SerializedName("DisplayName")
-    public String DisplayName;   
-
-    /**
      * NameSpace of the UseCase.
      * <p>
      * JSON name: "NameSpace"

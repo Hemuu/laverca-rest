@@ -20,7 +20,7 @@ import fi.methics.laverca.rest.util.MssRestException;
  * RegistrationClient regClient = new RegistrationClient(client);
  * 
  * try {
- *     MSS_RegistrationReq  req  = ...
+ *     MSS_RegistrationReq  req  = new MSS_RegistrationReqBuilder(...).build();
  *     MSS_RegistrationResp resp = regClient.sendMregReq(req);
  * } catch (RestException e) {
  *     System.out.println("MReg failed", e);
