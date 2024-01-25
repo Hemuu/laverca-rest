@@ -51,12 +51,6 @@ public class Status {
             this.StatusDetail = value;
         }
         
-        //@SerializedName("ReceiptRequestExtension")
-        //public ReceiptRequestExtension ReceiptRequestExtension;
-
-        //@SerializedName("ReceiptResponseExtension")
-        //public ReceiptResponseExtension ReceiptResponseExtension;
-        
         @SerializedName("ProfileQueryExtension")
         public ProfileQueryExtension ProfileQueryExtension;
         
@@ -79,11 +73,6 @@ public class Status {
         @SerializedName("RecoveryCodeCreated")
         public Boolean RecoveryCodeCreated;
         
-        //@SerializedName("MobileUser")
-        //public Sscds Sscds;
-        
-        //@SerializedName("MobileUser")
-        //public MobileUserV2 MobileUser;
     }
     
     public static class MobileUserCertificate {

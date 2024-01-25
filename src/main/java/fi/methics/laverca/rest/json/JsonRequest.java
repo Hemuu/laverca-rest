@@ -7,6 +7,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * JSON request base
+ */
 public class JsonRequest {
     
     protected static final Gson GSON = new GsonBuilder().create();
@@ -23,6 +26,13 @@ public class JsonRequest {
     @SerializedName("MSS_ProfileReq")
     public MSS_ProfileReq   MSS_ProfileReq;
     
+    @SerializedName("MSS_RegistrationReq")
+    public MSS_RegistrationReq MSS_RegistrationReq;
+    
+    /**
+     * Get the type of this JSON request.
+     * @return {@link RequestType}
+     */
     public RequestType getRequestType() {
         if (this.MSS_SignatureReq != null) {
             return RequestType.MSS_SignatureReq;
@@ -35,6 +45,9 @@ public class JsonRequest {
         }
         if (this.MSS_ProfileReq != null) {
             return RequestType.MSS_ProfileReq;
+        }
+        if (this.MSS_RegistrationReq != null) {
+            return RequestType.MSS_RegistrationReq;
         }
         return RequestType.UNKNOWN;
     }
