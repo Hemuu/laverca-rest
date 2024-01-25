@@ -59,7 +59,13 @@ public class MSS_RegistrationReq extends MSS_AbstractMessage {
      * Default constructor
      */
     public MSS_RegistrationReq() {
-        super();
+        this.UseCase = new UseCase();
+    }
+    
+    public MSS_RegistrationReq(String namespace, String name) {
+        this.UseCase = new UseCase();
+        this.UseCase.Name = name;
+        this.UseCase.NameSpace = namespace;
     }
     
 }
