@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 
-public class this.UseCase = new UseCase(); {
+public class MSS_AbstractMessage {
 
     protected static final Gson GSON = new GsonBuilder().create();
     
