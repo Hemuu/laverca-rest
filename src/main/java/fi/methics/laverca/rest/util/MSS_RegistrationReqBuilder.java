@@ -63,7 +63,7 @@ public class MSS_RegistrationReqBuilder {
     }
     
     public MSS_RegistrationReqBuilder withTargetApId(String apid) {
-        this.inputParams.add(new Input("targetimsi", apid));
+        this.inputParams.add(new Input("targetapid", apid));
         return this;
     }
     
