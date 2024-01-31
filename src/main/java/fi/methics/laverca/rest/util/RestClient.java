@@ -176,10 +176,11 @@ public class RestClient {
                     return this.getResponseBody(this.httpClient.execute(post, this.createContext(this.secondaryUrl)));
                 } catch (IOException e2) {
                     log.error("Connection to " + this.secondaryUrl + " failed: " + e.getMessage());
-                    throw new MssRestException(MssRestException.UNABLE_TO_PROVIDE_SERVICES, e.getMessage());
+                    throw new MssRestException(MssRestException.UNABLE_TO_PROVIDE_SERVICES, e);
                 }
             }
-            throw new MssRestException(MssRestException.UNABLE_TO_PROVIDE_SERVICES, e.getMessage());
+            log.error("Connection to " + this.secondaryUrl + " failed: " + e.getMessage());
+            throw new MssRestException(MssRestException.UNABLE_TO_PROVIDE_SERVICES, e);
         }
     }
     
