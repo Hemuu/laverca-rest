@@ -14,17 +14,25 @@ import fi.methics.laverca.rest.util.DTBS;
  */
 public class BatchSignatureReq extends AdditionalService {
 
-    @SerializedName("DataToBeSigned")
-    public Data DataToBeSigned;
-    
-    @SerializedName("DataToBeDisplayed")
-    public Data DataToBeDisplayed;
+    @SerializedName("BatchSignatureRequest")
+    public BatchSignatureRequest BatchSignatureRequest;
     
     public BatchSignatureReq(DTBS dtbs, String dtbd) {
         this.Description = BATCH_AS;
-        this.DataToBeSigned = new Data(dtbs);
-        this.DataToBeDisplayed = new Data();
-        this.DataToBeDisplayed.Data = dtbd;
+        this.BatchSignatureRequest = new BatchSignatureRequest();
+        this.BatchSignatureRequest.DataToBeSigned = new Data(dtbs);
+        this.BatchSignatureRequest.DataToBeDisplayed = new Data();
+        this.BatchSignatureRequest.DataToBeDisplayed.Data = dtbd;
+    }
+    
+    public class BatchSignatureRequest {
+
+        @SerializedName("DataToBeSigned")
+        public Data DataToBeSigned;
+        
+        @SerializedName("DataToBeDisplayed")
+        public Data DataToBeDisplayed;
+        
     }
     
 }
