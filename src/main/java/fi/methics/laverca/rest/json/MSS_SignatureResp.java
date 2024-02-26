@@ -58,7 +58,7 @@ public class MSS_SignatureResp extends MSS_AbstractMessage {
     public Status Status;
 
     @SerializedName("ServiceResponses")
-    public List<ServiceResponses> ServiceResponses;
+    public List<ServiceResponse> ServiceResponses;
     
     /**
      * Check if the signature was successful.
@@ -145,6 +145,14 @@ public class MSS_SignatureResp extends MSS_AbstractMessage {
      */
     public SignedData getCmsSignedData() {
         return X509Util.parseCmsSignature(this.getRawSignature());
+    }
+    
+    /**
+     * Get all AdditionalService responses
+     * @return AdditionalService responses
+     */
+    public List<ServiceResponse> getServiceResponses() {
+        return this.ServiceResponses;
     }
 
 }

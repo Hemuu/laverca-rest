@@ -19,6 +19,6 @@ public class MSS_StatusResp extends MSS_AbstractMessage {
     public Status Status;
 
     @SerializedName("ServiceResponses")
-    public List<ServiceResponses> ServiceResponses;
+    public List<ServiceResponse> ServiceResponses;
     
 }

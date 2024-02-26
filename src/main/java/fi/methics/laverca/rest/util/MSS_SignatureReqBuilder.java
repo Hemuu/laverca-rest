@@ -3,9 +3,13 @@
 //
 package fi.methics.laverca.rest.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import fi.methics.laverca.rest.MssClient;
+import fi.methics.laverca.rest.json.BatchSignatureReq;
+import fi.methics.laverca.rest.json.MSS_BatchSignatureReq;
 import fi.methics.laverca.rest.json.MSS_SignatureReq;
 
 /**
@@ -31,6 +35,8 @@ public class MSS_SignatureReqBuilder {
     private String mssFormat;
     private int timeout;
     
+    private List<BatchSignatureReq> batchReqs = new ArrayList<>();
+    
     public MSS_SignatureReqBuilder() {
         
     }
@@ -40,16 +46,32 @@ public class MSS_SignatureReqBuilder {
      * @return MSS_SignatureReq
      */
     public MSS_SignatureReq build() {
-        MSS_SignatureReq req = new MSS_SignatureReq(this.msisdn, this.dtbs, this.dtbd);
-        req.SignatureProfile = this.signatureprofile;
-        req.MSS_Format       = this.mssFormat;
-        req.AP_Info.AP_ID    = this.apid;
-        req.AP_Info.AP_PWD   = this.appwd;
-        req.AP_Info.AP_TransID = "A" + UUID.randomUUID().toString();
-        if (this.timeout > 0) {
-            req.TimeOut = String.valueOf(this.timeout);
+        if (this.batchReqs == null || this.batchReqs.isEmpty()) {
+            MSS_SignatureReq req = new MSS_SignatureReq(this.msisdn, this.dtbs, this.dtbd);
+            req.SignatureProfile = this.signatureprofile;
+            req.MSS_Format       = this.mssFormat;
+            req.AP_Info.AP_ID    = this.apid;
+            req.AP_Info.AP_PWD   = this.appwd;
+            req.AP_Info.AP_TransID = "A" + UUID.randomUUID().toString();
+            if (this.timeout > 0) {
+                req.TimeOut = String.valueOf(this.timeout);
+            }
+            return req;
+        } else {
+            MSS_BatchSignatureReq req = new MSS_BatchSignatureReq(this.msisdn, this.dtbs, this.dtbd);
+            req.SignatureProfile = this.signatureprofile;
+            req.MSS_Format       = this.mssFormat;
+            req.AP_Info.AP_ID    = this.apid;
+            req.AP_Info.AP_PWD   = this.appwd;
+            req.AP_Info.AP_TransID = "A" + UUID.randomUUID().toString();
+            if (this.timeout > 0) {
+                req.TimeOut = String.valueOf(this.timeout);
+            }
+            for (BatchSignatureReq br : this.batchReqs) {
+                req.addBatchSignatureRequest(br);
+            }
+            return req;
         }
-        return req;
     }
     
     /**
@@ -144,6 +166,11 @@ public class MSS_SignatureReqBuilder {
      */
     public MSS_SignatureReqBuilder withTimeout(int timeout) {
         this.timeout = timeout;
+        return this;
+    }
+    
+    public MSS_SignatureReqBuilder withBatchSinature(String dtbd, DTBS dtbs) {
+        this.batchReqs.add(new BatchSignatureReq(dtbs, dtbd));
         return this;
     }
     

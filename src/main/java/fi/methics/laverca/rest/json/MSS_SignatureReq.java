@@ -36,7 +36,7 @@ public class MSS_SignatureReq extends MSS_AbstractMessage {
     public Data DataToBeDisplayed;
 
     @SerializedName("AdditionalServices")
-    public List<AdditionalServices> AdditionalServices;
+    public List<AdditionalService> AdditionalServices;
         
     @SerializedName("MSS_Format")
     public String MSS_Format;
@@ -57,9 +57,18 @@ public class MSS_SignatureReq extends MSS_AbstractMessage {
         }
         
         this.AdditionalServices = new ArrayList<>();
-        //this.AdditionalServices.add(fi.methics.laverca.rest.json.AdditionalServices.VALIDATION_AS);
-        
         this.AP_Info = new AP_Info();
+    }
+    
+    /**
+     * Add a new AdditionalService request to this MSS_SignatureReq
+     * @param as AdditionalService
+     */
+    public void addAdditionalService(AdditionalService as) {
+        if (this.AdditionalServices == null) {
+            this.AdditionalServices = new ArrayList<>();
+        }
+        this.AdditionalServices.add(as);
     }
     
     public static class Data {
@@ -72,6 +81,18 @@ public class MSS_SignatureReq extends MSS_AbstractMessage {
         
         @SerializedName("Data")
         public String Data;
+        
+        public Data() {
+            
+        }
+        
+        public Data(DTBS dtbs) {
+            if (dtbs != null) {
+                this.Data     = Base64.getEncoder().encodeToString(dtbs.toBytes());
+                this.Encoding = dtbs.getEncoding();
+                this.MimeType = dtbs.getMimetype();
+            }
+        }
         
     }
 }
