@@ -191,10 +191,6 @@ public class MssClient {
         }
     }
     
-    public MSS_SignatureResp batchSign() {
-        
-    }
-    
     /**
      * Sign data. This is typically used for document signing, etc.
      * By default this method returns a CMS signature byte[].
