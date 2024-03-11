@@ -337,7 +337,9 @@ public class MssClient {
         public MssClient build() {
             MssClient client = new MssClient();
             client.client = new RestClient();
-            client.client.setAuthnMode(this.authnMode);
+            if (this.authnMode != null) {
+                client.client.setAuthnMode(this.authnMode);
+            }
             if (this.authnMode == AuthnMode.APIKEY) {
                 client.client.setApId(this.apid);
                 client.client.setApiKey(this.apikey);
