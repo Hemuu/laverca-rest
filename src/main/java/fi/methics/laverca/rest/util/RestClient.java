@@ -90,6 +90,7 @@ public class RestClient {
     public JsonResponse sendReq(final JsonRequest jReq) throws MssRestException {
         final String req  = jReq.toJson();
         final String resp = this.sendReq(req);
+        log.debug("Got response " + resp);
         try {
             JsonResponse jResp = JsonResponse.fromString(resp);
             if (jResp.isFault()) {

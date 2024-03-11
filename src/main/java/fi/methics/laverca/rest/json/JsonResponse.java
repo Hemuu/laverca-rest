@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 
+import fi.methics.laverca.rest.util.MssRestException;
+
 public class JsonResponse {
         
     protected static final Gson GSON = new GsonBuilder().create();
@@ -30,10 +32,14 @@ public class JsonResponse {
     public MSS_RegistrationResp MSS_RegistrationResp;
     
     /**
-     * @param resp
-     * @return
+     * Parse given response to a {@link JsonResponse}
+     * @param resp String response
+     * @return {@link JsonResponse}
      */
     public static JsonResponse fromString(String resp) {
+        if (!isJson(resp)) {
+            throw new MssRestException(MssRestException.UNABLE_TO_PROVIDE_SERVICES, "Received a response that is not JSON. Check the service URL.");
+        }
         return GSON.fromJson(resp, JsonResponse.class);
     }
     
@@ -123,4 +129,21 @@ public class JsonResponse {
         UseCaseManagementResp,
         UNKNOWN
     }
+    
+    /**
+     * Verify that the received response is JSON
+     * @param message Message (assumed to be json)
+     * @return true if JSON or null
+     */
+    private static boolean isJson(String message) {
+        if (message == null) return true;
+        if (message.trim().startsWith("<")) return false;
+        try {
+            GSON.fromJson(message, JsonResponse.class);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
 }
