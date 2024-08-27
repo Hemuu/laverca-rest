@@ -46,7 +46,13 @@ public class MSS_RegistrationReqBuilder {
         this.inputParams.add(new Input(name, value));
         return this;
     }
-
+    public MSS_RegistrationReqBuilder withOptionalParam(String name, String value) {
+   	 if(value!=null)
+   	 {
+          this.inputParams.add(new Input(name, value));
+   	 }
+       return this;
+   }
     public MSS_RegistrationReqBuilder withTargetMsisdn(String msisdn) {
         this.inputParams.add(new Input("targetmsisdn", msisdn));
         return this;
